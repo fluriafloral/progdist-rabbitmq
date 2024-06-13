@@ -2,10 +2,10 @@
 
 Projeto da disciplina de Programação Distribuída ministrada pelo professor Frederico Lopes
 
-# Descrição
+## Descrição
 Filas de comunicação entre gestor de dados e dashboards com RabbitMQ, implementada em JavaScript
 
-# Membros do grupo
+## Membros do grupo
 
 Italo Teixeira de Lima
 

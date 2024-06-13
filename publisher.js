@@ -1,4 +1,4 @@
-import { amqp } from 'amqplib/callback_api';
+const amqp = require('amqplib/callback_api');
 
 var url = 'amqp://localhost';
 
@@ -10,13 +10,13 @@ var url = 'amqp://localhost';
 
         -function(err, connection): Function To Handle Error And Successful Connection
 */
-amqp.connect('amqp://localhost', (connectionError, connection) => {
+amqp.connect(url, (connectionError, connection) => {
     // Connection Error Handling
     if (connectionError) { 
         throw error;
     }
 
-    connection.createChannel(function(channelError, channel) {
+    connection.createChannel((channelError, channel) => {
         // Channel Creation Error Handling
         if (channelError) {
             throw channelError;
@@ -53,13 +53,16 @@ amqp.connect('amqp://localhost', (connectionError, connection) => {
 
                 -buffer : content of messages
         */
-        channel.publish(exchange, '', Buffer.from('test message'));
+        let msg = 'test message';
+        channel.publish(exchange, '', Buffer.from(msg));
+
+        console.log(" [x] Sent %s", msg);
     });
 
-    // Closes connection after a defined time in milliseconds
+    // Closes connection after a defined time in milliseconds. 5000 = 5 seconds.
     let timeOpen = 5000;
     setTimeout(function() {
         connection.close();
         process.exit(0);
-      }, timeOpen);
+    }, timeOpen);
 });

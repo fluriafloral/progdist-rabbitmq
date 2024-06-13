@@ -1,4 +1,4 @@
-import { amqp } from 'amqplib/callback_api';
+const amqp = require('amqplib/callback_api');
 
 var url = 'amqp://localhost';
 
@@ -16,7 +16,7 @@ amqp.connect(url, (connectionError, connection) => {
         throw error;
     }
 
-    connection.createChannel(function(channelError, channel) {
+    connection.createChannel((channelError, channel) => {
         // Channel Creation Error Handling
         if (channelError) {
             throw channelError;
@@ -67,6 +67,7 @@ amqp.connect(url, (connectionError, connection) => {
                 -pattern: pattern to match from exchange 
 
             */
+            console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q.queue);
             channel.bindQueue(q.queue, exchange, '');
 
             /*
@@ -77,12 +78,10 @@ amqp.connect(url, (connectionError, connection) => {
                 -function(msg): function to handle each message
             */
             channel.consume(q.queue, (msg) => { 
-                //handles message
-            });
-        }
-
-        );
-    }
-    );
-}
-);
+                if(msg.content) {
+                    console.log(" [x] %s", msg.content.toString());
+                }
+            }, { noAck: false});
+        });
+    });
+});

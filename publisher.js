@@ -1,8 +1,18 @@
 import { amqp } from 'amqplib/callback_api';
 
-amqp.connect('amqp://localhost', (error, connection) => {
+var url = 'amqp://localhost';
+
+/*
+    Connects To AMQP Server
+
+    Parameters:
+        -url: AMPQ 0-9-1 (Original Protocol Implemented By RabbitMQ) URL
+
+        -function(err, connection): Function To Handle Error And Successful Connection
+*/
+amqp.connect('amqp://localhost', (connectionError, connection) => {
     // Connection Error Handling
-    if (error) { 
+    if (connectionError) { 
         throw error;
     }
 
@@ -27,7 +37,7 @@ amqp.connect('amqp://localhost', (error, connection) => {
                     headers: uses header attributes for routing
                     fanout: broadcasts message to all queues it knows
 
-                -options : 
+                -options: 
                     durable: exchange will survive if broker restarts
         */
         channel.assertExchange(exchange, 'fanout', {durable: true});
@@ -42,8 +52,14 @@ amqp.connect('amqp://localhost', (error, connection) => {
                          (empty string if it's to send to all queues)
 
                 -buffer : content of messages
-
         */
         channel.publish(exchange, '', Buffer.from('test message'));
     });
+
+    // Closes connection after a defined time in milliseconds
+    let timeOpen = 5000;
+    setTimeout(function() {
+        connection.close();
+        process.exit(0);
+      }, timeOpen);
 });
